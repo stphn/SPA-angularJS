@@ -10,3 +10,8 @@ This is a Single-page application framework with Angular.js and Gulp Tasks.
 5. Install gulp.js via the Mac terminal or Gitbash on a PC `> npm install -g gulp`
 5. Run the Gulp command `> gulp serve`
 6. You are done!
+
+## TODO
+1. Automate for Production
+2. Add demo HTML + CSS
+3. ?? 
