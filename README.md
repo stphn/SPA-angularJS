@@ -8,5 +8,5 @@ This is a Single-page application framework with Angular.js and Gulp Tasks.
 3. CD to the folder `cd attendance`
 4. Run `> npm-install` to install the project dependencies
 5. Install gulp.js via the Mac terminal or Gitbash on a PC `> npm install -g gulp`
-5. Run the Gulp command `> gulp`
+5. Run the Gulp command `> gulp serve`
 6. You are done!

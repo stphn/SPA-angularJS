@@ -2,8 +2,8 @@ var gulp = require('gulp'),
   gutil = require('gulp-util'),
   concat = require('gulp-concat'),
   browserify = require('gulp-browserify'),
-  webserver = require('gulp-webserver'),
   browserSync = require('browser-sync'),
+  reload = browserSync.reload,
   compass = require('gulp-compass');
 
 
@@ -45,30 +45,28 @@ gulp.task('watch', function() {
     'builds/development/views/*.html'], ['html']);
 });
 
-gulp.task('webserver', function() {
+// Watch Files For Changes & Reload
+gulp.task('serve', ['compass'], function () {
+  browserSync({
+    notify: true,
+    ghostMode: {
+      clicks: true,
+      forms: true,
+      scroll: true
+    },
+    // Run as an https by uncommenting 'https: true'
+    // Note: this uses an unsigned certificate which on first access
+    //       will present a certificate warning in the browser.
+    // https: true,
+    server: ['builds/development']
+  });
 
-  gulp.src('builds/development/')
-    .pipe(webserver({
-      // host: 'localhost',
-      // port: 9000,
-      livereload: true,
-      open: true
-    }));
+  gulp.watch(['builds/development/*.html','builds/development/views/*.html'], ['html', reload]);
+  gulp.watch(['components/sass/*.scss'], ['compass', reload]);
+  gulp.watch(jsSources, ['jsSources']);
+  gulp.watch(['builds/development/images/**/*'], reload);
 });
 
-gulp.task('browser-sync', function () {
-   var files = [
-      'builds/development/*.html',
-      'builds/development/css/*.css',
-      'builds/development/images/**/*.png',
-      'builds/development/js/**/*.js'
-   ];
 
-   browserSync.init(files, {
-      server: {
-         baseDir: './'
-      }
-   });
-});
 
-gulp.task('default', ['html', 'js','compass' ,'browser-sync','watch']);
+gulp.task('default', ['html', 'js','compass','watch']);
