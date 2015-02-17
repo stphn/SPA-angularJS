@@ -1,0 +1,20 @@
+{
+  "name": "SPA-AngularJS",
+  "version": "0.0.1",
+  "description": "A single-page application (SPA) Framework using AngularJS and Gulp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stphn/SPA-angularJS.git"
+  },
+  "author": "Stéphane Goeuriot",
+  "devDependencies": {
+    "browser-sync": "^2.1.1",
+    "gulp": "^3.8.11",
+    "gulp-browserify": "^0.5.1",
+    "gulp-compass": "^2.0.3",
+    "gulp-concat": "^2.5.0",
+    "gulp-util": "^3.0.3",
+    "gulp-webserver": "^0.9.0",
+    "jquery": "^2.1.3"
+  }
+}
