@@ -28,9 +28,10 @@ gulp.task('html', function() {
 });
 
 gulp.task('compass', function() {
+  gutil.log ('compassing')
   gulp.src(sassSources)
     .pipe(compass({
-      css: 'stylesheets',
+      css: 'builds/development/css',
       sass: 'components/sass',
       image: 'builds/development/images',
       style: 'expanded'
@@ -40,34 +41,54 @@ gulp.task('compass', function() {
 
 
 gulp.task('watch', function() {
-  gulp.watch(jsSources, ['jsSources']);
-  gulp.watch('components/sass/*.scss', ['compass']);
-  gulp.watch(['builds/development/*.html',
-    'builds/development/views/*.html'], ['html']);
+  gulp.watch(['builds/development/*.html','builds/development/views/*.html'], ['html', reload]);
+  gulp.watch(['components/sass/*.scss'], ['compass', reload]);
+  gulp.watch(jsSources, ['js']);
+  gulp.watch(['builds/development/images/**/*'], reload);
 });
 
 // Watch Files For Changes & Reload
-gulp.task('serve', ['compass'], function () {
+gulp.task('serve',['compass','js','html','watch'], function () {
+
   browserSync({
-    notify: true,
+
+    // available options here: http://www.browsersync.io/docs/options/
+    server: ['builds/development'],
+
+    /* Run as an https by uncommenting 'https: true'
+    Note: this uses an unsigned certificate which on first access will present a certificate warning in the browser.*/
+    // https: true,
+
+    // all off by default, but enables multiple browsers to all browse in sync
     ghostMode: {
       clicks: true,
       forms: true,
       scroll: true
     },
-    // Run as an https by uncommenting 'https: true'
-    // Note: this uses an unsigned certificate which on first access
-    //       will present a certificate warning in the browser.
-    // https: true,
-    server: ['builds/development']
-  });
+    
+    // Open the site in default browser when you run "gulp"
+    open: true,
 
-  gulp.watch(['builds/development/*.html','builds/development/views/*.html'], ['html', reload]);
-  gulp.watch(['components/sass/*.scss'], ['compass', reload]);
-  gulp.watch(jsSources, ['jsSources']);
-  gulp.watch(['builds/development/images/**/*'], reload);
+    // Uncommenting the line below and this will open the site in Chrome & Firefox
+    //browser: ["google chrome", "firefox"],
+
+    // displays message in browser when reload happens or styles injected
+    notify: true,
+
+    // Log information about changed files
+    logFileChanges: true,
+
+    // A delay between changes and reloading so 2 changes in quick succession don't get missed
+    reloadDelay: 2000,
+
+    // shows browsers connected in command line
+    logConnections: true,
+
+    // Uncommenting the line below and this will change the console logging prefix. Useful if you're creating your own project based on BrowserSync
+    //logPrefix: "My Awesome Project"
+  });
+ 
 });
 
-
-
-gulp.task('default', ['html', 'js','compass','watch']);
+  
+gulp.task('default', ['watch','serve']); //gulp
