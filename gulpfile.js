@@ -10,7 +10,9 @@ var gulp = require('gulp'),
 var jsSources = [
   'components/scripts/pixgrid.js',
   'components/scripts/rclick.js',
-  'components/scripts/tagline.js'
+  'components/scripts/tagline.js',
+  'components/scripts/script.js',
+
 ];
 var sassSources = ['components/sass/style.scss'];
 
@@ -18,7 +20,7 @@ var htmlSources = ['builds/development/*.html'];
 
 gulp.task('js', function() {
   gulp.src(jsSources)
-    .pipe(concat('script.js'))
+    .pipe(concat('script.js'),reload)
     .pipe(browserify())
     .pipe(gulp.dest('builds/development/js'))
 });
@@ -43,7 +45,7 @@ gulp.task('compass', function() {
 gulp.task('watch', function() {
   gulp.watch(['builds/development/*.html','builds/development/views/*.html'], ['html', reload]);
   gulp.watch(['components/sass/*.scss'], ['compass', reload]);
-  gulp.watch(jsSources, ['js']);
+  gulp.watch(jsSources, ['js', reload]);
   gulp.watch(['builds/development/images/**/*'], reload);
 });
 
@@ -91,4 +93,4 @@ gulp.task('serve',['compass','js','html','watch'], function () {
 });
 
   
-gulp.task('default', ['watch','serve']); //gulp
+gulp.task('default', ['serve','watch']); //gulp
