@@ -1,28 +1,50 @@
 var gulp = require('gulp'),
-  gutil = require('gulp-util'),
-  concat = require('gulp-concat'),
-  browserify = require('gulp-browserify'),
-  browserSync = require('browser-sync'),
-  reload = browserSync.reload,
-  compass = require('gulp-compass');
+    gutil = require('gulp-util'),
+    concat = require('gulp-concat'),
+    browserify = require('gulp-browserify'),
+    browserSync = require('browser-sync'),
+    reload = browserSync.reload,
+    compass = require('gulp-compass');
 
+var env,
+    jsSources,
+    sassSources,
+    htmlSources,
+    outputDir,
+    sassStyle;
+    
+env = process.env.NODE_ENV || 'development';
 
-var jsSources = [
+/* ENVIRONEMENTS*/
+if (env === 'development') {
+  outputDir = 'builds/development/';
+  sassStyle = 'expanded';
+} else{
+  outputDir = 'builds/production/';
+  sassStyle = 'compressed';
+};
+
+/* SOURCES*/
+jsSources = [
   'components/scripts/pixgrid.js',
   'components/scripts/rclick.js',
   'components/scripts/tagline.js',
   'components/scripts/script.js',
 
 ];
-var sassSources = ['components/sass/style.scss'];
 
-var htmlSources = ['builds/development/*.html'];
+sassSources = ['components/sass/style.scss'];
+
+htmlSources = [outputDir + '*.html'];
+
+
+/* TASKS*/
 
 gulp.task('js', function() {
   gulp.src(jsSources)
     .pipe(concat('script.js'),reload)
     .pipe(browserify())
-    .pipe(gulp.dest('builds/development/js'))
+    .pipe(gulp.dest(outputDir + 'js'))
 });
 
 gulp.task('html', function() {
@@ -30,23 +52,23 @@ gulp.task('html', function() {
 });
 
 gulp.task('compass', function() {
-  gutil.log ('compassing')
+
   gulp.src(sassSources)
     .pipe(compass({
-      css: 'builds/development/css',
+      css: outputDir + 'css',
       sass: 'components/sass',
-      image: 'builds/development/images',
-      style: 'expanded'
+      image: outputDir + 'images',
+      style: sassStyle
     }))
-    .pipe(gulp.dest('builds/development/css'));
+    .pipe(gulp.dest(outputDir + 'css'));
 });
 
 
 gulp.task('watch', function() {
-  gulp.watch(['builds/development/*.html','builds/development/views/*.html'], ['html', reload]);
-  gulp.watch(['components/sass/*.scss'], ['compass', reload]);
+  gulp.watch([outputDir + '*.html',outputDir + 'views/*.html'], ['html', reload]);
+  gulp.watch(['components/sass/**/*.scss'], ['compass', reload]);
   gulp.watch(jsSources, ['js', reload]);
-  gulp.watch(['builds/development/images/**/*'], reload);
+  gulp.watch([outputDir + 'images/**/*'], reload);
 });
 
 // Watch Files For Changes & Reload
@@ -55,7 +77,7 @@ gulp.task('serve',['compass','js','html','watch'], function () {
   browserSync({
 
     // available options here: http://www.browsersync.io/docs/options/
-    server: ['builds/development'],
+    server: [outputDir],
 
     /* Run as an https by uncommenting 'https: true'
     Note: this uses an unsigned certificate which on first access will present a certificate warning in the browser.*/
