@@ -71,6 +71,8 @@ var rclick = function() {
     }, false); // click event
   }
 }(); //anonymous closure
+
+
 var $, fill;
 
 $ = require('jquery');
@@ -81,6 +83,8 @@ $ = require('jquery');
 
 fill;
 
+// jquery goes here
+	
 },{"jquery":2}],2:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
