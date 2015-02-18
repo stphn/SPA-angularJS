@@ -4,7 +4,9 @@ var gulp = require('gulp'),
     browserify = require('gulp-browserify'),
     browserSync = require('browser-sync'),
     reload = browserSync.reload,
-    compass = require('gulp-compass');
+    compass = require('gulp-compass'),
+    uglify = require('gulp-uglify'),
+    gulpif = require('gulp-if');
 
 var env,
     jsSources,
@@ -44,6 +46,7 @@ gulp.task('js', function() {
   gulp.src(jsSources)
     .pipe(concat('script.js'),reload)
     .pipe(browserify())
+    .pipe(gulpif(env === 'production', uglify()))
     .pipe(gulp.dest(outputDir + 'js'))
 });
 
