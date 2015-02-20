@@ -1,18 +1,21 @@
-var gulp = require('gulp'),
-    gutil = require('gulp-util'),
-    concat = require('gulp-concat'),
-    browserify = require('gulp-browserify'),
+var gulp =        require('gulp'),
+    gutil =       require('gulp-util'),
+    concat =      require('gulp-concat'),
+    browserify =  require('gulp-browserify'),
     browserSync = require('browser-sync'),
-    reload = browserSync.reload,
-    compass = require('gulp-compass'),
-    uglify = require('gulp-uglify'),
-    gulpif = require('gulp-if');
+    reload =      browserSync.reload,
+    compass =     require('gulp-compass'),
+    uglify =      require('gulp-uglify'),
+    gulpif =      require('gulp-if'),
+    minifyHTML =  require('gulp-minify-html');
 
 var env,
     jsSources,
+    angularSources,
     sassSources,
     htmlSources,
     outputDir,
+    outputDirViews,
     sassStyle;
     
 env = process.env.NODE_ENV || 'development';
@@ -31,13 +34,12 @@ jsSources = [
   'components/scripts/pixgrid.js',
   'components/scripts/rclick.js',
   'components/scripts/tagline.js',
-  'components/scripts/script.js',
+  'components/scripts/script.js'
 
 ];
-
-sassSources = ['components/sass/style.scss'];
-
-htmlSources = [outputDir + '*.html'];
+angularSources =    [outputDir + '**/*.js'];
+sassSources =       ['components/sass/style.scss'];
+htmlSources =       [outputDir + '**/*.html'];
 
 
 /* TASKS*/
@@ -46,13 +48,24 @@ gulp.task('js', function() {
   gulp.src(jsSources)
     .pipe(concat('script.js'),reload)
     .pipe(browserify())
-    .pipe(gulpif(env === 'production', uglify()))
+    .pipe(gulpif(env === 'production', uglify() ))
     .pipe(gulp.dest(outputDir + 'js'))
 });
 
-gulp.task('html', function() {
-  gulp.src(htmlSources)
+gulp.task('angular', function() {
+  gulp.src(['builds/development/**/*js']) // index and views
+
+    .pipe(gulpif(env === 'production',uglify() ))
+    .pipe(gulpif(env ==='production',gulp.dest(outputDir) ))
 });
+
+gulp.task('html', function() {
+  gulp.src(['builds/development/**/*html']) // index and views
+    .pipe(gulpif(env ==='production',minifyHTML() ))
+    .pipe(gulpif(env ==='production',gulp.dest(outputDir) ))
+  
+});
+
 
 gulp.task('compass', function() {
 
@@ -68,14 +81,15 @@ gulp.task('compass', function() {
 
 
 gulp.task('watch', function() {
-  gulp.watch([outputDir + '*.html',outputDir + 'views/*.html'], ['html', reload]);
+  gulp.watch(['builds/development/*.html','builds/development/views/*.html'], ['html', reload]);
+  gulp.watch(['builds/development/js/app.js'], ['angular', reload]);
   gulp.watch(['components/sass/**/*.scss'], ['compass', reload]);
   gulp.watch(jsSources, ['js', reload]);
   gulp.watch([outputDir + 'images/**/*'], reload);
 });
 
 // Watch Files For Changes & Reload
-gulp.task('serve',['compass','js','html','watch'], function () {
+gulp.task('serve',['html','angular','compass','js','watch'], function () {
 
   browserSync({
 
@@ -118,4 +132,4 @@ gulp.task('serve',['compass','js','html','watch'], function () {
 });
 
   
-gulp.task('default', ['serve','watch']); //gulp
+gulp.task('default', ['angular','serve','watch']); //gulp
