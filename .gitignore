@@ -1,11 +1,7 @@
 .DS_Store
-node_modules
+.sass-cache
 .tmp
 npm-debug.log
-.sass-cache
-<<<<<<< HEAD
 config.codekit
+node_modules
 development/production/*
-=======
-config.codekit
->>>>>>> parent of 1c83b1a... ignore production files
