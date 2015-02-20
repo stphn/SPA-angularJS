@@ -1,4 +1,5 @@
-# ! UNDER DEVELOPMENT ! Single-Page Application with AngularJS
+## ! UNDER DEVELOPMENT !
+#Single-Page Application with AngularJS
 
 This is a Single-page application framework with Angular.js and Gulp Tasks.
 
